@@ -10,7 +10,7 @@ import json
 import os
 from datetime import datetime
 
-DB_DIR = os.path.join(os.path.dirname(__file__), "..", "data")
+DB_DIR = os.environ.get("MCA_DATA_DIR") or os.path.join(os.path.dirname(__file__), "..", "data")
 COMPANIES_DB = os.path.join(DB_DIR, "companies.db")
 JOBS_DB = os.path.join(DB_DIR, "jobs.db")
 

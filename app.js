@@ -3,7 +3,10 @@
    Pulls live data from FastAPI (port 8000), falls back to MCA_DATA mock.
    ========================================================================== */
 
-const API = 'http://localhost:8000/api';
+// Points to Render backend when live, localhost when running locally
+const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:8000/api'
+  : 'https://mca-careers-api.onrender.com/api';
 let JOBS = [], COMPANIES = [], API_UP = false;
 
 const $ = id => document.getElementById(id);
