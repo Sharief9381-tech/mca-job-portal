@@ -6,7 +6,7 @@
 // Points to Render backend when live, localhost when running locally
 const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? 'http://localhost:8000/api'
-  : 'https://mca-careers-api.onrender.com/api';
+  : 'https://mca-job-portal.onrender.com/api';
 let JOBS = [], COMPANIES = [], API_UP = false;
 
 const $ = id => document.getElementById(id);
