@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MCA Careers — India's Direct Corporate Job Portal</title>
+  <meta name="description" content="Find real jobs directly from Indian companies' own career pages. No middlemen. Powered by MCA registry data.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ── NAVBAR ── -->
+  <header class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a class="logo" href="#">
+        <div class="logo-icon"><i class="fa-solid fa-building-columns"></i></div>
+        <div>
+          <div class="logo-name">MCA<span>Careers</span></div>
+          <div class="logo-sub">India's Direct Job Portal</div>
+        </div>
+      </a>
+
+      <nav class="nav-tabs">
+        <button class="nav-tab active" data-view="jobs-view"><i class="fa-solid fa-briefcase"></i><span>Jobs</span></button>
+        <button class="nav-tab" data-view="companies-view"><i class="fa-solid fa-industry"></i><span>Companies</span></button>
+        <button class="nav-tab" data-view="ats-view"><i class="fa-solid fa-globe"></i><span>Career Portals</span></button>
+        <button class="nav-tab" data-view="resolver-view"><i class="fa-solid fa-magnifying-glass-chart"></i><span>Resolver</span></button>
+        <button class="nav-tab" data-view="saved-view">
+          <i class="fa-solid fa-bookmark"></i><span>Saved <span id="saved-count" class="count-badge">0</span></span>
+        </button>
+      </nav>
+
+      <div class="nav-right">
+        <div class="live-badge"><span class="dot"></span>Live Data</div>
+        <button class="menu-btn" id="menu-btn"><i class="fa-solid fa-bars"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── MOBILE NAV ── -->
+  <div class="mobile-nav" id="mobile-nav">
+    <button class="nav-tab active" data-view="jobs-view"><i class="fa-solid fa-briefcase"></i> Jobs</button>
+    <button class="nav-tab" data-view="companies-view"><i class="fa-solid fa-industry"></i> Companies</button>
+    <button class="nav-tab" data-view="ats-view"><i class="fa-solid fa-globe"></i> Portals</button>
+    <button class="nav-tab" data-view="resolver-view"><i class="fa-solid fa-magnifying-glass-chart"></i> Resolver</button>
+    <button class="nav-tab" data-view="saved-view"><i class="fa-solid fa-bookmark"></i> Saved</button>
+  </div>
+
+  <main>
+
+    <!-- ══════════════════════════════════════════
+         VIEW 1 — JOB PORTAL
+    ══════════════════════════════════════════ -->
+    <section id="jobs-view" class="view active">
+
+      <!-- Hero -->
+      <div class="hero">
+        <div class="hero-inner">
+          <div class="hero-tag"><i class="fa-solid fa-certificate"></i> MCA Registry Integrated · 1.4M+ Companies</div>
+          <h1>Find Jobs <em>Directly</em> from<br>Every Indian Company</h1>
+          <p class="hero-sub">Real job listings straight from company career pages — not aggregators. Search across lakhs of MCA-registered corporates by role, skill, or CIN.</p>
+
+          <!-- Search -->
+          <div class="search-card">
+            <div class="search-row">
+              <div class="search-input-wrap">
+                <i class="fa-solid fa-magnifying-glass si"></i>
+                <input type="text" id="global-search-input" placeholder="Search by job title, skill, company, or CIN…" autocomplete="off">
+              </div>
+              <button class="btn-search" id="search-btn"><i class="fa-solid fa-arrow-right"></i> Search</button>
+            </div>
+
+            <!-- Exp tabs -->
+            <div class="exp-bar">
+              <span class="exp-label"><i class="fa-solid fa-layer-group"></i> Experience:</span>
+              <div class="exp-tabs">
+                <button class="exp-tab active" data-exp="all">All</button>
+                <button class="exp-tab fresher" data-exp="entry_level">🎓 Freshers (0–2 yr)</button>
+                <button class="exp-tab expd" data-exp="experienced">💼 Experienced (2+ yr)</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="stats-row">
+            <div class="stat"><span class="stat-n" id="stat-companies">1,482,910+</span><span class="stat-l">MCA Companies</span></div>
+            <div class="stat"><span class="stat-n" id="stat-portals">142,500+</span><span class="stat-l">Career Portals</span></div>
+            <div class="stat"><span class="stat-n" id="stat-freshers">38,900+</span><span class="stat-l">Fresher Jobs</span></div>
+            <div class="stat"><span class="stat-n" id="stat-ats">12+</span><span class="stat-l">ATS Engines</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Jobs Layout -->
+      <div class="jobs-layout">
+
+        <!-- Sidebar Filters -->
+        <aside class="sidebar" id="sidebar">
+          <div class="sidebar-header">
+            <h3><i class="fa-solid fa-sliders"></i> Filters</h3>
+            <button id="reset-filters-btn" class="btn-text-sm">Reset</button>
+          </div>
+
+          <div class="filter-block">
+            <div class="filter-title">Max Experience</div>
+            <div class="slider-val-row">
+              <span>0 yr</span>
+              <span class="slider-badge" id="exp-val-display">Any</span>
+              <span>12+ yr</span>
+            </div>
+            <input type="range" id="exp-slider" class="slider" min="0" max="12" value="12" step="1">
+          </div>
+
+          <div class="filter-block">
+            <div class="filter-title">Role Category</div>
+            <div class="check-list" id="category-filter-list"></div>
+          </div>
+
+          <div class="filter-block">
+            <div class="filter-title">Location</div>
+            <div class="check-list" id="location-filter-list"></div>
+          </div>
+
+          <div class="filter-block">
+            <div class="filter-title">ATS Engine</div>
+            <div class="check-list" id="ats-filter-list"></div>
+          </div>
+
+          <div class="filter-block">
+            <div class="filter-title">Company Type</div>
+            <select id="mca-class-select" class="select-field">
+              <option value="all">All Types</option>
+              <option value="Public">Public Limited</option>
+              <option value="Private">Private Limited</option>
+              <option value="LLP">LLP</option>
+            </select>
+          </div>
+        </aside>
+
+        <!-- Jobs Feed -->
+        <div class="jobs-feed">
+          <div class="feed-topbar">
+            <span class="results-label" id="jobs-results-count">Loading…</span>
+            <div class="feed-controls">
+              <button class="btn-filter-toggle" id="filter-toggle-btn">
+                <i class="fa-solid fa-sliders"></i> Filters
+              </button>
+              <select id="sort-select" class="select-field sm">
+                <option value="newest">Newest First</option>
+                <option value="company">Company A–Z</option>
+                <option value="exp-asc">Exp: Low → High</option>
+                <option value="exp-desc">Exp: High → Low</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="jobs-cards-grid" class="jobs-grid">
+            <!-- Skeleton placeholders -->
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+          </div>
+
+          <div id="load-more-wrap" class="load-more-wrap hidden">
+            <button id="load-more-btn" class="btn-load-more">Load More Jobs <i class="fa-solid fa-chevron-down"></i></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         VIEW 2 — MCA COMPANY DIRECTORY
+    ══════════════════════════════════════════ -->
+    <section id="companies-view" class="view">
+      <div class="view-hero">
+        <h2><i class="fa-solid fa-industry"></i> MCA Company Directory</h2>
+        <p>Search the Ministry of Corporate Affairs registered company database by CIN, name, ROC, or capital.</p>
+      </div>
+
+      <div class="table-toolbar">
+        <div class="search-input-wrap sm">
+          <i class="fa-solid fa-magnifying-glass si"></i>
+          <input type="text" id="mca-search-input" placeholder="Search CIN, company name, domain…">
+        </div>
+        <select id="roc-filter-select" class="select-field">
+          <option value="all">All ROC Jurisdictions</option>
+          <option value="ROC Mumbai">ROC Mumbai</option>
+          <option value="ROC Bangalore">ROC Bangalore</option>
+          <option value="ROC Delhi">ROC Delhi</option>
+          <option value="ROC Hyderabad">ROC Hyderabad</option>
+          <option value="ROC Pune">ROC Pune</option>
+          <option value="ROC Chennai">ROC Chennai</option>
+          <option value="ROC Ahmedabad">ROC Ahmedabad</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>CIN</th>
+              <th>Legal Name</th>
+              <th>ROC</th>
+              <th>Incorporated</th>
+              <th>Capital</th>
+              <th>Career Portal</th>
+              <th>ATS</th>
+              <th>Jobs</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="mca-table-body">
+            <tr><td colspan="9" class="table-loading"><i class="fa-solid fa-spinner fa-spin"></i> Loading companies…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         VIEW 3 — CAREER PORTALS / ATS TRACKER
+    ══════════════════════════════════════════ -->
+    <section id="ats-view" class="view">
+      <div class="view-hero">
+        <h2><i class="fa-solid fa-globe"></i> Verified Career Portals</h2>
+        <p>Direct links to each company's own ATS-powered career portal — bypassing all job aggregators.</p>
+      </div>
+      <div class="portal-grid" id="career-sites-grid"></div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         VIEW 4 — CAREER RESOLVER
+    ══════════════════════════════════════════ -->
+    <section id="resolver-view" class="view">
+      <div class="view-hero">
+        <h2><i class="fa-solid fa-magnifying-glass-chart"></i> Career Resolver Tool</h2>
+        <p>Enter any MCA company name or CIN to discover its official career page, ATS engine, and live hiring status.</p>
+      </div>
+
+      <div class="resolver-wrap">
+        <div class="resolver-card">
+          <div class="form-group">
+            <label>Company Name or CIN</label>
+            <input type="text" id="resolver-input-name" placeholder="e.g. ZOMATO LIMITED or U72900DL2010PTC206375">
+          </div>
+          <div class="form-group">
+            <label>Official Domain <span class="optional">(optional)</span></label>
+            <input type="text" id="resolver-input-domain" placeholder="e.g. zomato.com">
+          </div>
+          <button class="btn-primary" id="run-resolver-btn">
+            <i class="fa-solid fa-robot"></i> Resolve Career Portal
+          </button>
+        </div>
+
+        <div id="resolver-result-box" class="resolver-result hidden"></div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         VIEW 5 — SAVED JOBS
+    ══════════════════════════════════════════ -->
+    <section id="saved-view" class="view">
+      <div class="view-hero">
+        <h2><i class="fa-solid fa-bookmark"></i> Saved Jobs</h2>
+        <p>Jobs you've bookmarked for later. Stored locally in your browser.</p>
+      </div>
+      <div id="saved-jobs-grid" class="jobs-grid"></div>
+    </section>
+
+  </main>
+
+  <!-- ── CIN MODAL ── -->
+  <div id="cin-modal" class="modal-bg hidden">
+    <div class="modal">
+      <div class="modal-head">
+        <div>
+          <h3 id="modal-company-name">Company</h3>
+          <code id="modal-cin-badge">CIN: —</code>
+        </div>
+        <button class="modal-close" id="close-modal-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" id="modal-body-content"></div>
+      <div class="modal-foot">
+        <a href="#" id="modal-visit-career-btn" target="_blank" class="btn-primary">
+          <i class="fa-solid fa-up-right-from-square"></i> Open Career Portal
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TOAST ── -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>© 2026 MCA Careers · Powered by Ministry of Corporate Affairs public registry data</span>
+      <span>Jobs sourced directly from company career pages via public ATS APIs</span>
+    </div>
+  </footer>
+
+  <script src="mca_data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
