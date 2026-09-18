@@ -82,7 +82,7 @@ async function loadData() {
 async function fetchJobs(append = false) {
   if (S.loading) return;
   S.loading = true;
-  const p = new URLSearchParams({ limit: S.pageSize, offset: S.page * S.pageSize });
+  const p = new URLSearchParams({ limit: S.pageSize, offset: S.page * S.pageSize, sort: 'newest' });
   if (S.search)       p.set('search', S.search);
   if (S.exp !== 'all') p.set('exp', S.exp);
   try {
@@ -223,7 +223,14 @@ function renderJobs() {
         [j.title, j.company_name, j.brand, j.company_cin, ...(j.skills||[])].join(' ').toLowerCase().includes(q)
       );
     }
+    // Sort newest first for fallback data
+    jobs.sort((a, b) => {
+      const da = a.first_seen || a.posted_date || '';
+      const db = b.first_seen || b.posted_date || '';
+      return db.localeCompare(da);
+    });
   }
+  // API already returns newest first (ORDER BY posted_date DESC, first_seen DESC)
 
   const total = API_UP ? S.total : jobs.length;
   const shown = jobs.length;
