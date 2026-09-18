@@ -280,7 +280,6 @@ function jobCard(j) {
     <div class="card-header">
       <div class="card-avatar ${avColor}">${initials}</div>
       <div class="card-header-right">
-        <span class="live-api-tag"><span class="live-api-dot"></span> LIVE API</span>
         <button class="btn-bookmark-card ${saved?'saved':''}" data-id="${j.id}" title="Bookmark">
           <i class="fa-${saved?'solid':'regular'} fa-bookmark"></i>
         </button>
