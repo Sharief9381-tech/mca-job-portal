@@ -1,0 +1,26 @@
+{
+  "Accenture": {
+    "token": "accenture/AccentureCareers",
+    "wd": "wd103",
+    "total": 2000,
+    "wd_host": "accenture.wd103.myworkdayjobs.com"
+  },
+  "Barclays": {
+    "token": "barclays/External_Career_Site_Barclays",
+    "wd": "wd3",
+    "total": 895,
+    "wd_host": "barclays.wd3.myworkdayjobs.com"
+  },
+  "Workday": {
+    "token": "workday/Workday",
+    "wd": "wd5",
+    "total": 380,
+    "wd_host": "workday.wd5.myworkdayjobs.com"
+  },
+  "CrowdStrike": {
+    "token": "crowdstrike/CrowdStrikeCareers",
+    "wd": "wd5",
+    "total": 378,
+    "wd_host": "crowdstrike.wd5.myworkdayjobs.com"
+  }
+}

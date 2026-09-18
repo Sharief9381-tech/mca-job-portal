@@ -18,19 +18,25 @@ HEADERS = {
 
 def fetch_jobs(token: str, company_info: dict) -> list[dict]:
     """
-    token format: "{tenant}/{site}"  e.g. "swiggy/Swiggy-Careers"
+    token format: "{tenant}/{site}" or "{tenant}/{site}@{wd_ver}"
+    e.g. "accenture/AccentureCareers@wd103" or "swiggy/SwiggyCareers"
     """
+    # Support optional @wd_ver suffix
+    wd_ver = "wd3"
+    if "@" in token:
+        token, wd_ver = token.rsplit("@", 1)
+
     parts = token.split("/", 1)
     if len(parts) < 2:
         print(f"[Workday] Invalid token format: {token}")
         return []
 
     tenant, site = parts[0], parts[1]
-    base_url = f"https://{tenant}.myworkdayjobs.com/wday/cxs/{tenant}/{site}/jobs"
+    base_url = f"https://{tenant}.{wd_ver}.myworkdayjobs.com/wday/cxs/{tenant}/{site}/jobs"
 
     all_jobs = []
     offset = 0
-    limit = 20  # Workday's default page size
+    limit = 50  # Workday supports up to 50 per page
 
     while True:
         payload = {
@@ -54,7 +60,7 @@ def fetch_jobs(token: str, company_info: dict) -> list[dict]:
         for job in job_postings:
             # Build the apply URL
             ext_path = job.get("externalPath", "")
-            apply_url = f"https://{tenant}.myworkdayjobs.com/{site}{ext_path}" if ext_path else ""
+            apply_url = f"https://{tenant}.{wd_ver}.myworkdayjobs.com/{site}{ext_path}" if ext_path else ""
 
             # Location
             location_parts = []

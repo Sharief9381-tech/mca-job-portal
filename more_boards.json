@@ -1,0 +1,35 @@
+{
+  "greenhouse": {
+    "newrelic": 45,
+    "fivetran": 191,
+    "cortex": 7,
+    "remote": 2,
+    "lattice": 9,
+    "salesloft": 33,
+    "brex": 260,
+    "conga": 39,
+    "zoominfo": 113,
+    "cognism": 16,
+    "sendbird": 9,
+    "twilio": 148,
+    "bandwidth": 26,
+    "vonage": 22,
+    "contentful": 11,
+    "storyblok": 15,
+    "vercel": 84,
+    "netlify": 1,
+    "planetscale": 13,
+    "launchdarkly": 51,
+    "algolia": 34,
+    "elastic": 357,
+    "anthropic": 608,
+    "beam": 5
+  },
+  "lever": {
+    "outreach": 28
+  },
+  "smartrecruiters": {
+    "Gong": 9,
+    "NarayanaHealth": 2
+  }
+}

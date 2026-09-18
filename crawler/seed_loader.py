@@ -84,8 +84,11 @@ def _extract_token(career_url: str, ats: str, domain: str) -> str:
             m = re.search(r'([a-zA-Z0-9_-]+)\.darwinbox', career_url)
             return m.group(1) if m else domain
         elif ats == 'workday':
-            m = re.search(r'([a-zA-Z0-9_-]+)\.(?:wd\d+|myworkdayjobs)\.com/([a-zA-Z0-9_-]+)', career_url)
-            return f"{m.group(1)}/{m.group(2)}" if m else domain
+            m = re.search(r'([a-zA-Z0-9_-]+)\.(wd\d+)\.myworkdayjobs\.com/([a-zA-Z0-9_-]+)', career_url)
+            if m:
+                return f"{m.group(1)}/{m.group(3)}@{m.group(2)}"
+            m2 = re.search(r'([a-zA-Z0-9_-]+)\.myworkdayjobs\.com/([a-zA-Z0-9_-]+)', career_url)
+            return f"{m2.group(1)}/{m2.group(2)}@wd3" if m2 else domain
         elif ats == 'taleo':
             m = re.search(r'([a-zA-Z0-9_-]+)\.taleo\.net', career_url)
             return m.group(1) if m else domain
