@@ -36,7 +36,7 @@ def fetch_jobs(token: str, company_info: dict) -> list[dict]:
 
     all_jobs = []
     offset = 0
-    limit = 50  # Workday supports up to 50 per page
+    limit = 20  # Workday max is 20 per page
 
     while True:
         payload = {
@@ -47,6 +47,8 @@ def fetch_jobs(token: str, company_info: dict) -> list[dict]:
         }
         try:
             resp = requests.post(base_url, json=payload, headers=HEADERS, timeout=15)
+            if resp.status_code == 400:
+                break  # Workday returns 400 when offset exceeds total
             resp.raise_for_status()
             data = resp.json()
         except Exception as e:
@@ -107,7 +109,7 @@ def fetch_jobs(token: str, company_info: dict) -> list[dict]:
 
         total = data.get("total", 0)
         offset += limit
-        if offset >= total or len(all_jobs) >= total:
+        if not job_postings or offset >= total or len(all_jobs) >= min(total, 500):
             break
 
     print(f"[Workday] {token}: fetched {len(all_jobs)} jobs")
