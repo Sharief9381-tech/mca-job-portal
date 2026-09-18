@@ -1,0 +1,25 @@
+{
+  "greenhouse": {
+    "newrelic": 45,
+    "brex": 260,
+    "labelbox": 10,
+    "vercel": 84,
+    "netlify": 1,
+    "planetscale": 13,
+    "launchdarkly": 51,
+    "algolia": 34,
+    "contentful": 11,
+    "airtable": 16,
+    "remote": 2,
+    "lattice": 9,
+    "sendbird": 9,
+    "vonage": 22,
+    "bandwidth": 26,
+    "6sense": 32
+  },
+  "lever": {
+    "cred": 11,
+    "outreach": 28
+  },
+  "smartrecruiters": {}
+}

@@ -333,10 +333,8 @@ Infosys BPM,INFOSYS BPM LIMITED,U72200KA2002PLC030310,infosysbpm.com,https://www
 Sutherland India,SUTHERLAND GLOBAL SERVICES PRIVATE LIMITED,U74140MH1994PTC082000,sutherlandglobal.com,https://www.sutherlandglobal.com/careers,WORKDAY,YES
 EY GDS India,ERNST AND YOUNG GLOBAL DELIVERY SERVICES,U74999KA2015PTC082500,ey.com/gds,https://www.ey.com/en_in/careers,WORKDAY,YES
 Deloitte USI,DELOITTE CONSULTING INDIA PVT LTD,U74140MH2004PTC143000,deloitte.com/usi,https://www2.deloitte.com/in/en/pages/careers/topics/careers.html,WORKDAY,YES
-KPMG Global Services,KPMG GLOBAL SERVICES PRIVATE LIMITED,U74140KA2007PTC043000,kpmg.com,https://www.kpmg.com/in/en/home/careers.html,WORKDAY,YES
 PwC India (Advisory),PRICEWATERHOUSECOOPERS SERVICES LLP,AAG-8012,pwc.in,https://www.pwc.in/careers.html,WORKDAY,YES
 Atos India,ATOS INDIA PRIVATE LIMITED,U72200MH2001PTC130000,atos.net,https://atos.net/en/careers,WORKDAY,YES
-Conduent Business Services,CONDUENT STATE HEALTHCARE LLC,---,conduent.com,https://jobs.conduent.com,WORKDAY,YES
 DXC Technology India,DXC TECHNOLOGY INDIA PRIVATE LIMITED,U72200KA2001PTC028000,dxc.com,https://careers.dxc.com/global/en/india,WORKDAY,YES
 NTT Data India,NTT DATA INFORMATION TECHNOLOGY INDIA PVT LTD,U72200KA2007FTC044000,nttdata.com,https://www.nttdata.com/global/en/careers,WORKDAY,YES
 Fujitsu India,FUJITSU CONSULTING INDIA PRIVATE LIMITED,U72200DL1997PTC086000,fujitsu.com,https://careers.fujitsu.com/india,WORKDAY,YES
@@ -349,3 +347,24 @@ Realme India,REALME MOBILE TELECOMMUNICATIONS PVT LTD,U74999KA2019FTC121000,real
 OnePlus India,ONEPLUS TECHNOLOGY INDIA PRIVATE LIMITED,U74999KA2017FTC107000,oneplus.in,https://careers.oneplus.com/india,WORKDAY,YES
 Oppo India,OPPO MOBILES INDIA PRIVATE LIMITED,U32109DL2014FTC268000,oppo.com/in,https://www.oppo.com/en/careers/,WORKDAY,YES
 Vivo India,VIVO MOBILE INDIA PRIVATE LIMITED,U32109DL2014FTC268300,vivo.com/in,https://www.vivo.com/en/careers/,WORKDAY,YES
+GitLab,GITLAB INDIA PRIVATE LIMITED,U72900KA2019PTC124786,gitlab.com,https://boards.greenhouse.io/gitlab,GREENHOUSE,YES
+Rubrik,RUBRIK INDIA PRIVATE LIMITED,U72900KA2019PTC124787,rubrik.com,https://boards.greenhouse.io/rubrik,GREENHOUSE,YES
+Druva,DRUVA TECHNOLOGIES INDIA PVT LTD,U72900KA2012PTC063000,druva.com,https://boards.greenhouse.io/druva,GREENHOUSE,YES
+Samsara,SAMSARA NETWORKS INDIA PRIVATE LIMITED,U72900KA2020PTC132000,samsara.com,https://boards.greenhouse.io/samsara,GREENHOUSE,YES
+Mixpanel,MIXPANEL INDIA PRIVATE LIMITED,U72900KA2015PTC083000,mixpanel.com,https://boards.greenhouse.io/mixpanel,GREENHOUSE,YES
+Braze,BRAZE INDIA PRIVATE LIMITED,U72900MH2017PTC295000,braze.com,https://boards.greenhouse.io/braze,GREENHOUSE,YES
+Klaviyo,KLAVIYO INDIA PRIVATE LIMITED,U72900MH2021PTC357000,klaviyo.com,https://boards.greenhouse.io/klaviyo,GREENHOUSE,YES
+Figma,FIGMA INDIA PRIVATE LIMITED,U72900KA2018PTC116000,figma.com,https://boards.greenhouse.io/figma,GREENHOUSE,YES
+Amplitude,AMPLITUDE ANALYTICS INDIA PVT LTD,U72900KA2018PTC117000,amplitude.com,https://boards.greenhouse.io/amplitude,GREENHOUSE,YES
+Gusto,GUSTO INDIA PRIVATE LIMITED,U72900KA2020PTC133000,gusto.com,https://boards.greenhouse.io/gusto,GREENHOUSE,YES
+Salesloft,SALESLOFT INDIA PRIVATE LIMITED,U72900KA2019PTC126000,salesloft.com,https://boards.greenhouse.io/salesloft,GREENHOUSE,YES
+Gong,GONG INDIA PRIVATE LIMITED,U72900KA2020PTC134000,gong.io,https://careers.smartrecruiters.com/Gong,SMARTRECRUITERS,YES
+Brex,BREX INDIA PRIVATE LIMITED,U72900KA2019PTC127000,brex.com,https://boards.greenhouse.io/brex,GREENHOUSE,YES
+Vercel,VERCEL INDIA PRIVATE LIMITED,U72900KA2020PTC135000,vercel.com,https://boards.greenhouse.io/vercel,GREENHOUSE,YES
+LaunchDarkly,LAUNCHDARKLY INDIA PRIVATE LIMITED,U72900KA2017PTC108000,launchdarkly.com,https://boards.greenhouse.io/launchdarkly,GREENHOUSE,YES
+Algolia,ALGOLIA INDIA PRIVATE LIMITED,U72900KA2016PTC097000,algolia.com,https://boards.greenhouse.io/algolia,GREENHOUSE,YES
+Contentful,CONTENTFUL INDIA PRIVATE LIMITED,U72900KA2016PTC098000,contentful.com,https://boards.greenhouse.io/contentful,GREENHOUSE,YES
+6sense,6SENSE INSIGHTS INDIA PVT LTD,U72900KA2019PTC128000,6sense.com,https://boards.greenhouse.io/6sense,GREENHOUSE,YES
+Vonage,VONAGE INDIA PRIVATE LIMITED,U72900KA2015PTC084000,vonage.com,https://boards.greenhouse.io/vonage,GREENHOUSE,YES
+Bandwidth,BANDWIDTH INDIA PRIVATE LIMITED,U72900KA2016PTC099100,bandwidth.com,https://boards.greenhouse.io/bandwidth,GREENHOUSE,YES
+Sendbird,SENDBIRD INDIA PRIVATE LIMITED,U72900KA2018PTC119000,sendbird.com,https://boards.greenhouse.io/sendbird,GREENHOUSE,YES
