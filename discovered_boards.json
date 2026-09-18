@@ -1,0 +1,252 @@
+{
+  "greenhouse": [
+    {
+      "slug": "razorpaysoftwareprivatelimited",
+      "total_jobs": 18,
+      "india_jobs": 13,
+      "has_india": true
+    },
+    {
+      "slug": "groww",
+      "total_jobs": 8,
+      "india_jobs": 8,
+      "has_india": true
+    },
+    {
+      "slug": "slice",
+      "total_jobs": 27,
+      "india_jobs": 0,
+      "has_india": true
+    },
+    {
+      "slug": "inmobi",
+      "total_jobs": 62,
+      "india_jobs": 41,
+      "has_india": true
+    },
+    {
+      "slug": "glance",
+      "total_jobs": 43,
+      "india_jobs": 25,
+      "has_india": true
+    },
+    {
+      "slug": "porter",
+      "total_jobs": 5,
+      "india_jobs": 0,
+      "has_india": true
+    },
+    {
+      "slug": "stage",
+      "total_jobs": 140,
+      "india_jobs": 0,
+      "has_india": true
+    },
+    {
+      "slug": "airbnb",
+      "total_jobs": 165,
+      "india_jobs": 11,
+      "has_india": true
+    },
+    {
+      "slug": "stripe",
+      "total_jobs": 669,
+      "india_jobs": 34,
+      "has_india": true
+    },
+    {
+      "slug": "twilio",
+      "total_jobs": 148,
+      "india_jobs": 15,
+      "has_india": true
+    },
+    {
+      "slug": "dropbox",
+      "total_jobs": 40,
+      "india_jobs": 0,
+      "has_india": true
+    },
+    {
+      "slug": "mongodb",
+      "total_jobs": 411,
+      "india_jobs": 20,
+      "has_india": true
+    },
+    {
+      "slug": "databricks",
+      "total_jobs": 881,
+      "india_jobs": 103,
+      "has_india": true
+    },
+    {
+      "slug": "elastic",
+      "total_jobs": 357,
+      "india_jobs": 15,
+      "has_india": true
+    },
+    {
+      "slug": "datadog",
+      "total_jobs": 449,
+      "india_jobs": 8,
+      "has_india": true
+    },
+    {
+      "slug": "okta",
+      "total_jobs": 326,
+      "india_jobs": 104,
+      "has_india": true
+    },
+    {
+      "slug": "pagerduty",
+      "total_jobs": 49,
+      "india_jobs": 0,
+      "has_india": true
+    },
+    {
+      "slug": "gitlab",
+      "total_jobs": 220,
+      "india_jobs": 29,
+      "has_india": true
+    },
+    {
+      "slug": "rubrik",
+      "total_jobs": 142,
+      "india_jobs": 37,
+      "has_india": true
+    },
+    {
+      "slug": "druva",
+      "total_jobs": 40,
+      "india_jobs": 15,
+      "has_india": true
+    },
+    {
+      "slug": "samsara",
+      "total_jobs": 270,
+      "india_jobs": 10,
+      "has_india": true
+    },
+    {
+      "slug": "lattice",
+      "total_jobs": 9,
+      "india_jobs": 0,
+      "has_india": true
+    },
+    {
+      "slug": "gusto",
+      "total_jobs": 96,
+      "india_jobs": 0,
+      "has_india": true
+    },
+    {
+      "slug": "remote",
+      "total_jobs": 2,
+      "india_jobs": 0,
+      "has_india": true
+    },
+    {
+      "slug": "salesloft",
+      "total_jobs": 33,
+      "india_jobs": 3,
+      "has_india": true
+    },
+    {
+      "slug": "amplitude",
+      "total_jobs": 38,
+      "india_jobs": 3,
+      "has_india": true
+    },
+    {
+      "slug": "mixpanel",
+      "total_jobs": 91,
+      "india_jobs": 5,
+      "has_india": true
+    },
+    {
+      "slug": "braze",
+      "total_jobs": 307,
+      "india_jobs": 0,
+      "has_india": true
+    },
+    {
+      "slug": "klaviyo",
+      "total_jobs": 144,
+      "india_jobs": 0,
+      "has_india": true
+    },
+    {
+      "slug": "iterable",
+      "total_jobs": 16,
+      "india_jobs": 0,
+      "has_india": true
+    },
+    {
+      "slug": "figma",
+      "total_jobs": 152,
+      "india_jobs": 1,
+      "has_india": true
+    },
+    {
+      "slug": "airtable",
+      "total_jobs": 16,
+      "india_jobs": 0,
+      "has_india": true
+    }
+  ],
+  "lever": [
+    {
+      "slug": "paytm",
+      "total_jobs": 205
+    },
+    {
+      "slug": "meesho",
+      "total_jobs": 49
+    },
+    {
+      "slug": "porter",
+      "total_jobs": 25
+    },
+    {
+      "slug": "epifi",
+      "total_jobs": 11
+    },
+    {
+      "slug": "fi",
+      "total_jobs": 16
+    },
+    {
+      "slug": "nium",
+      "total_jobs": 26
+    }
+  ],
+  "smartrecruiters": [
+    {
+      "token": "Freshworks",
+      "total_jobs": 139
+    },
+    {
+      "token": "Unacademy",
+      "total_jobs": 3
+    },
+    {
+      "token": "Swiggy",
+      "total_jobs": 102
+    },
+    {
+      "token": "Cars24",
+      "total_jobs": 1
+    },
+    {
+      "token": "NoBroker",
+      "total_jobs": 1
+    },
+    {
+      "token": "Upstox",
+      "total_jobs": 1
+    },
+    {
+      "token": "Gong",
+      "total_jobs": 9
+    }
+  ]
+}
