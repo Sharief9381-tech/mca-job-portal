@@ -272,7 +272,7 @@ function jobCard(j) {
     timeAgo = diff < 1 ? 'Just now' : diff < 24 ? `${diff}h ago` : `${Math.floor(diff/24)}d ago`;
   }
 
-  const source = `${brand} Careers${timeAgo ? ' · ' + timeAgo : ''}`;
+  const source = `${brand}${timeAgo ? ' · ' + timeAgo : ''}`;
 
   return `
 <div class="job-card">
