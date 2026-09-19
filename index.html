@@ -1,250 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Careers — Find work you'll love</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MCA CareerGrid — Direct Company Job Portal</title>
+  <meta name="description" content="Access career portals of every MCA registered company. No LinkedIn. No Naukri. Direct apply links from official ATS feeds.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <!-- ── LEFT SIDEBAR ── -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <span class="logo-icon"><i class="fa-solid fa-wave-square"></i></span>
-      <span class="logo-text"><strong>Careers</strong></span>
-    </div>
-
-    <div class="sidebar-section-label">FIND YOUR NEXT ROLE</div>
-
-    <nav class="sidebar-nav">
-      <a class="nav-item active" data-view="jobs-view" href="#">
-        <i class="fa-solid fa-briefcase"></i> Job Portal
-      </a>
-      <a class="nav-item" data-view="companies-view" href="#">
-        <i class="fa-solid fa-building"></i> MCA Directory
-      </a>
-      <a class="nav-item" data-view="ats-view" href="#">
-        <i class="fa-solid fa-wifi"></i> ATS Tracker
-      </a>
-      <a class="nav-item" data-view="saved-view" href="#">
-        <i class="fa-regular fa-bookmark"></i> Bookmarks
-        <span class="nav-badge" id="saved-count">0</span>
-      </a>
-    </nav>
-
-    <div class="sidebar-footer">
-      <div class="sidebar-status">
-        <span class="status-dot" id="status-dot"></span>
-        <span id="status-label">Connecting…</span>
+  <!-- ── NAVBAR ── -->
+  <header class="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <span class="logo-grid"></span>
+        <span class="logo-text">MCA <strong>CareerGrid</strong></span>
+        <span class="live-pill"><span class="live-dot"></span> Live API Connected</span>
       </div>
-      <div class="sidebar-copy">Careers · 2026</div>
+      <nav class="nav-links">
+        <a class="nav-link active" data-view="jobs-view" href="#">Job Portal</a>
+        <a class="nav-link" data-view="companies-view" href="#">MCA Register</a>
+        <a class="nav-link" data-view="ats-view" href="#">Career Portals</a>
+        <a class="nav-link" data-view="saved-view" href="#">Bookmarks <span id="saved-count" class="saved-badge">0</span></a>
+      </nav>
+      <button class="menu-btn" id="menu-btn"><i class="fa-solid fa-bars"></i></button>
     </div>
-  </aside>
+  </header>
 
-  <!-- ── MAIN CONTENT ── -->
-  <div class="main">
+  <!-- mobile nav -->
+  <div class="mobile-nav hidden" id="mobile-nav">
+    <a class="nav-link active" data-view="jobs-view" href="#">Job Portal</a>
+    <a class="nav-link" data-view="companies-view" href="#">MCA Register</a>
+    <a class="nav-link" data-view="ats-view" href="#">Career Portals</a>
+    <a class="nav-link" data-view="saved-view" href="#">Bookmarks</a>
+  </div>
 
-    <!-- ══════════════════════════════════
+  <main>
+
+    <!-- ═══════════════════════════════
          VIEW: JOB PORTAL
-    ══════════════════════════════════ -->
+    ═══════════════════════════════ -->
     <section id="jobs-view" class="view active">
-
-      <!-- Top bar -->
-      <div class="topbar">
-        <div class="breadcrumb">JOB SEARCH <span class="bc-sep">&rsaquo;</span> <strong>JOB PORTAL</strong></div>
-        <div class="topbar-right">
-          <span class="live-tag" id="live-tag"><span class="live-dot"></span> CAREER DATA <span id="data-status">LOADING</span></span>
-        </div>
-      </div>
 
       <!-- Hero -->
       <div class="hero">
-        <div class="hero-left">
-          <div class="hero-eyebrow">
-            <span class="verified-dot"></span> VERIFIED JOBS &nbsp;/&nbsp; UPDATED <span id="last-updated">Just now</span>
-          </div>
-          <h1 class="hero-title">Find work you'll <span class="hero-blue">love.</span></h1>
-          <p class="hero-sub">Search trusted openings from verified companies.</p>
+        <div class="hero-tag">
+          Aggregated straight from company ATS feeds
         </div>
-        <div class="hero-right">
-          <div class="hero-stat-box">
-            <div class="hero-stat-label">OPEN JOBS</div>
-            <div class="hero-stat-num" id="hero-jobs">—</div>
-            <div class="hero-stat-sub">from verified companies</div>
+        <h1>Access Career Portals of Every MCA Company</h1>
+        <p class="hero-sub">No LinkedIn. No Naukri. Every listing links to the company's own hiring page, matched to its Ministry of Corporate Affairs registration.</p>
+
+        <!-- Stats strip -->
+        <div class="stats-strip">
+          <div class="stat-item">
+            <div class="stat-num" id="stat-companies">—</div>
+            <div class="stat-label">MCA Companies Linked</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num" id="stat-portals">—</div>
+            <div class="stat-label">Verified Career Portals</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num" id="stat-freshers">—</div>
+            <div class="stat-label">Fresher / Entry Jobs</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num" id="stat-ats">—</div>
+            <div class="stat-label">ATS Engines Indexed</div>
           </div>
         </div>
       </div>
 
-      <!-- Stats strip -->
-      <div class="stats-strip">
-        <div class="stat-item">
-          <div class="stat-label">COMPANIES</div>
-          <div class="stat-val" id="stat-companies">—</div>
-          <div class="stat-desc">hiring now</div>
+      <!-- Filter bar -->
+      <div class="filter-bar">
+        <div class="exp-tabs">
+          <button class="exp-tab active" data-exp="all">All Jobs</button>
+          <button class="exp-tab" data-exp="entry_level">🎓 Freshers &amp; Entry Level (0-2 Yrs)</button>
+          <button class="exp-tab" data-exp="experienced">💼 Experienced (2+ Yrs)</button>
         </div>
-        <div class="stat-item">
-          <div class="stat-label">OPEN JOBS</div>
-          <div class="stat-val" id="stat-jobs">—</div>
-          <div class="stat-desc">official openings</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-label">CAREER SOURCES</div>
-          <div class="stat-val" id="stat-sources">—</div>
-          <div class="stat-desc">verified sources</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-label">UPDATED</div>
-          <div class="stat-val" id="stat-updated">—</div>
-          <div class="stat-desc">ago</div>
-        </div>
-      </div>
-
-      <!-- Jobs section -->
-      <div class="jobs-section">
-        <div class="jobs-section-header">
-          <div class="jobs-section-title">
-            <span class="section-eyebrow">JOB OPPORTUNITIES</span>
-            <h2>Recommended for you</h2>
-          </div>
-          <div class="jobs-count-label" id="jobs-results-count"></div>
-        </div>
-
-        <!-- Search + filters -->
-        <div class="jobs-toolbar">
+        <div class="filter-bar-right">
           <div class="search-wrap">
-            <i class="fa-solid fa-magnifying-glass search-icon"></i>
-            <input type="text" id="global-search-input" class="search-input" placeholder="Search jobs, skills, or locations…">
+            <i class="fa-solid fa-magnifying-glass si"></i>
+            <input type="text" id="global-search-input" class="search-input" placeholder="Search jobs, skills, company, CIN…">
           </div>
-          <div class="exp-filter-tabs">
-            <button class="exp-btn active" data-exp="all">All</button>
-            <button class="exp-btn" data-exp="entry_level">Entry-level</button>
-            <button class="exp-btn" data-exp="mid_level">Mid-level</button>
-            <button class="exp-btn" data-exp="experienced">Senior</button>
-          </div>
-        </div>
-
-        <!-- Cards grid -->
-        <div id="jobs-cards-grid" class="cards-grid">
-          <!-- Skeleton loaders -->
-          <div class="card-skeleton"></div>
-          <div class="card-skeleton"></div>
-          <div class="card-skeleton"></div>
-          <div class="card-skeleton"></div>
-          <div class="card-skeleton"></div>
-          <div class="card-skeleton"></div>
-        </div>
-
-        <div id="load-more-wrap" class="load-more-wrap hidden">
-          <button id="load-more-btn" class="btn-load-more">Load more jobs</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ══════════════════════════════════
-         VIEW: MCA DIRECTORY
-    ══════════════════════════════════ -->
-    <section id="companies-view" class="view">
-      <div class="topbar">
-        <div class="breadcrumb">JOB SEARCH <span class="bc-sep">&rsaquo;</span> <strong>MCA DIRECTORY</strong></div>
-      </div>
-      <div class="inner-pad">
-        <h2 class="page-title">MCA Company Directory</h2>
-        <p class="page-sub">Ministry of Corporate Affairs registered companies with verified career portals.</p>
-        <div class="table-toolbar">
-          <div class="search-wrap sm">
-            <i class="fa-solid fa-magnifying-glass search-icon"></i>
-            <input type="text" id="mca-search-input" class="search-input" placeholder="Search CIN, company name, domain…">
-          </div>
-          <select id="roc-filter-select" class="select-field">
-            <option value="all">All ROC</option>
-            <option value="ROC Mumbai">ROC Mumbai</option>
-            <option value="ROC Bangalore">ROC Bangalore</option>
-            <option value="ROC Delhi">ROC Delhi</option>
-            <option value="ROC Hyderabad">ROC Hyderabad</option>
-            <option value="ROC Chennai">ROC Chennai</option>
-            <option value="ROC Pune">ROC Pune</option>
-            <option value="ROC Ahmedabad">ROC Ahmedabad</option>
-          </select>
-        </div>
-        <div class="table-wrap">
-          <table class="data-table">
-            <thead>
-              <tr><th>CIN</th><th>Company</th><th>ROC</th><th>Year</th><th>Capital</th><th>Career URL</th><th>ATS</th><th>Jobs</th><th></th></tr>
-            </thead>
-            <tbody id="mca-table-body">
-              <tr><td colspan="9" class="table-loading"><i class="fa-solid fa-spinner fa-spin"></i> Loading…</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <!-- ══════════════════════════════════
-         VIEW: ATS TRACKER
-    ══════════════════════════════════ -->
-    <section id="ats-view" class="view">
-      <div class="topbar">
-        <div class="breadcrumb">JOB SEARCH <span class="bc-sep">&rsaquo;</span> <strong>ATS TRACKER</strong></div>
-      </div>
-      <div class="inner-pad">
-        <h2 class="page-title">Verified Career Portals</h2>
-        <p class="page-sub">Direct links to official company career pages — no aggregators.</p>
-        <div class="portal-grid" id="career-sites-grid"></div>
-      </div>
-    </section>
-
-    <!-- ══════════════════════════════════
-         VIEW: RESOLVER
-    ══════════════════════════════════ -->
-    <section id="resolver-view" class="view">
-      <div class="topbar">
-        <div class="breadcrumb">JOB SEARCH <span class="bc-sep">&rsaquo;</span> <strong>CAREER RESOLVER</strong></div>
-      </div>
-      <div class="inner-pad">
-        <h2 class="page-title">Career Resolver Tool</h2>
-        <p class="page-sub">Enter any MCA company name or CIN to discover its official career page and ATS.</p>
-        <div class="resolver-box">
-          <div class="form-row">
-            <label>Company Name or CIN</label>
-            <input type="text" id="resolver-input-name" class="form-input" placeholder="e.g. ZOMATO LIMITED or U72900DL2010PTC206375">
-          </div>
-          <div class="form-row">
-            <label>Domain <span class="optional">(optional)</span></label>
-            <input type="text" id="resolver-input-domain" class="form-input" placeholder="e.g. zomato.com">
-          </div>
-          <button class="btn-primary" id="run-resolver-btn">
-            <i class="fa-solid fa-magnifying-glass"></i> Resolve Career Portal
+          <button class="btn-filters" id="filter-toggle-btn">
+            <i class="fa-solid fa-sliders"></i> Filters
           </button>
-          <div id="resolver-result-box" class="resolver-result hidden"></div>
         </div>
       </div>
+
+      <!-- Filters panel -->
+      <div class="filters-panel hidden" id="filters-panel">
+        <div class="filter-group">
+          <div class="filter-group-label">Role Category</div>
+          <div id="category-filter-list" class="chip-filter-list"></div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-group-label">Location</div>
+          <div id="location-filter-list" class="chip-filter-list"></div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-group-label">ATS Engine</div>
+          <div id="ats-filter-list" class="chip-filter-list"></div>
+        </div>
+      </div>
+
+      <!-- Results header -->
+      <div class="results-header">
+        <span id="jobs-results-count" class="results-label">Loading…</span>
+        <select id="sort-select" class="sort-select">
+          <option value="newest">Newest First</option>
+          <option value="company">Company A–Z</option>
+          <option value="exp-asc">Exp: Low → High</option>
+          <option value="exp-desc">Exp: High → Low</option>
+        </select>
+      </div>
+
+      <!-- Jobs grid -->
+      <div id="jobs-cards-grid" class="jobs-grid">
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+      </div>
+
+      <div id="load-more-wrap" class="load-more-wrap hidden">
+        <button id="load-more-btn" class="btn-load-more">Load More</button>
+      </div>
     </section>
 
-    <!-- ══════════════════════════════════
-         VIEW: SAVED
-    ══════════════════════════════════ -->
+    <!-- ═══════════════════════════════
+         VIEW: MCA REGISTER
+    ═══════════════════════════════ -->
+    <section id="companies-view" class="view">
+      <div class="page-header">
+        <h2>MCA Company Register</h2>
+        <p>Search Ministry of Corporate Affairs registered companies by CIN, name, ROC or capital.</p>
+      </div>
+      <div class="table-toolbar">
+        <div class="search-wrap">
+          <i class="fa-solid fa-magnifying-glass si"></i>
+          <input type="text" id="mca-search-input" class="search-input" placeholder="Search CIN, company name, domain…">
+        </div>
+        <select id="roc-filter-select" class="sort-select">
+          <option value="all">All ROC</option>
+          <option value="ROC Mumbai">ROC Mumbai</option>
+          <option value="ROC Bangalore">ROC Bangalore</option>
+          <option value="ROC Delhi">ROC Delhi</option>
+          <option value="ROC Hyderabad">ROC Hyderabad</option>
+          <option value="ROC Chennai">ROC Chennai</option>
+          <option value="ROC Pune">ROC Pune</option>
+          <option value="ROC Ahmedabad">ROC Ahmedabad</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr><th>CIN</th><th>Company</th><th>ROC</th><th>Year</th><th>Capital</th><th>Career Portal</th><th>ATS</th><th>Jobs</th><th></th></tr>
+          </thead>
+          <tbody id="mca-table-body">
+            <tr><td colspan="9" class="loading-cell"><i class="fa-solid fa-spinner fa-spin"></i> Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════
+         VIEW: CAREER PORTALS
+    ═══════════════════════════════ -->
+    <section id="ats-view" class="view">
+      <div class="page-header">
+        <h2>Verified Career Portals</h2>
+        <p>Direct links to official ATS-powered career pages — bypassing all aggregators.</p>
+      </div>
+      <div class="portal-grid" id="career-sites-grid"></div>
+    </section>
+
+    <!-- ═══════════════════════════════
+         VIEW: BOOKMARKS
+    ═══════════════════════════════ -->
     <section id="saved-view" class="view">
-      <div class="topbar">
-        <div class="breadcrumb">JOB SEARCH <span class="bc-sep">&rsaquo;</span> <strong>BOOKMARKS</strong></div>
+      <div class="page-header">
+        <h2>Bookmarked Jobs</h2>
+        <p>Jobs you've saved for later.</p>
       </div>
-      <div class="inner-pad">
-        <h2 class="page-title">Saved Jobs</h2>
-        <p class="page-sub">Jobs you've bookmarked for later.</p>
-        <div id="saved-jobs-grid" class="cards-grid"></div>
-      </div>
+      <div id="saved-jobs-grid" class="jobs-grid"></div>
     </section>
 
-  </div><!-- end .main -->
+  </main>
 
   <!-- ── CIN MODAL ── -->
   <div id="cin-modal" class="modal-overlay hidden">
-    <div class="modal-card">
-      <div class="modal-header">
+    <div class="modal">
+      <div class="modal-head">
         <div>
           <h3 id="modal-company-name">Company</h3>
           <code id="modal-cin-badge">CIN: —</code>
@@ -252,9 +206,9 @@
         <button id="close-modal-btn" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div id="modal-body-content" class="modal-body"></div>
-      <div class="modal-footer">
-        <a id="modal-visit-career-btn" href="#" target="_blank" class="btn-primary">
-          <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Career Portal
+      <div class="modal-foot">
+        <a id="modal-visit-career-btn" href="#" target="_blank" class="btn-primary full">
+          <i class="fa-solid fa-up-right-from-square"></i> Open Career Portal
         </a>
       </div>
     </div>

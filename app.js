@@ -1,6 +1,5 @@
 /* =====================================================================
-   INDIA/CAREERS — App Controller
-   Fetches live data from Render API, falls back to MCA_DATA mock.
+   MCA CareerGrid — App Controller
    ===================================================================== */
 
 const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
@@ -11,32 +10,21 @@ let JOBS = [], COMPANIES = [], API_UP = false;
 const $ = id => document.getElementById(id);
 const qsa = s => document.querySelectorAll(s);
 
-const AVATAR_COLORS = ['av-blue','av-green','av-orange','av-purple','av-red','av-teal','av-pink','av-yellow'];
-function avatarColor(name) {
-  let h = 0;
-  for (let c of (name||'')) h = (h * 31 + c.charCodeAt(0)) & 0xffff;
-  return AVATAR_COLORS[h % AVATAR_COLORS.length];
-}
-
 const S = {
-  view: 'jobs-view',
-  exp: 'all',
-  search: '',
-  page: 0,
-  pageSize: 30,
-  total: 0,
-  loading: false,
-  saved: new Set(JSON.parse(localStorage.getItem('india_careers_saved') || '[]')),
-  rocFilter: 'all',
-  mcaSearch: '',
+  view: 'jobs-view', exp: 'all', search: '', sort: 'newest',
+  page: 0, pageSize: 30, total: 0, loading: false,
+  cats: new Set(), locs: new Set(), ats: new Set(),
+  rocFilter: 'all', mcaSearch: '',
+  saved: new Set(JSON.parse(localStorage.getItem('mca_cg_saved') || '[]')),
 };
 
-// ── Boot ──────────────────────────────────────────────────────────────────
+// ── Boot ──────────────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', async () => {
   showSkeletons();
   await connect();
   await loadData();
+  buildFilters();
   bindEvents();
   renderJobs();
   renderCompanies();
@@ -45,33 +33,27 @@ document.addEventListener('DOMContentLoaded', async () => {
   syncBadge();
 });
 
-// ── API ───────────────────────────────────────────────────────────────────
+// ── API ───────────────────────────────────────────────────────────────
 
 async function connect() {
   try {
     const r = await fetch(`${API}/stats`, { signal: AbortSignal.timeout(4000) });
     if (r.ok) {
       API_UP = true;
-      const s = await r.json();
-      applyStats(s);
-      setLiveStatus(true);
+      applyStats(await r.json());
+      setLive(true);
     }
-  } catch {
-    setLiveStatus(false);
-  }
+  } catch { setLive(false); }
 }
 
 async function loadData() {
-  if (API_UP) {
-    await fetchJobs();
-    await fetchCompanies();
-  } else {
-    JOBS = (MCA_DATA.jobs || []).map(j => ({ ...j, apply_url: j.direct_url || '#' }));
+  if (API_UP) { await fetchJobs(); await fetchCompanies(); }
+  else {
+    JOBS = (MCA_DATA.jobs || []).map(j => ({ ...j, apply_url: j.apply_url || j.direct_url || '#' }));
     COMPANIES = MCA_DATA.companies || [];
     applyStats({
       total_jobs: JOBS.length,
       fresher_jobs: JOBS.filter(j => j.exp_level === 'entry_level').length,
-      experienced_jobs: JOBS.filter(j => j.exp_level === 'experienced').length,
       total_companies: COMPANIES.length,
       crawled_companies: COMPANIES.length,
       ats_breakdown: {},
@@ -80,10 +62,9 @@ async function loadData() {
 }
 
 async function fetchJobs(append = false) {
-  if (S.loading) return;
-  S.loading = true;
+  if (S.loading) return; S.loading = true;
   const p = new URLSearchParams({ limit: S.pageSize, offset: S.page * S.pageSize, sort: 'newest' });
-  if (S.search)       p.set('search', S.search);
+  if (S.search) p.set('search', S.search);
   if (S.exp !== 'all') p.set('exp', S.exp);
   try {
     const r = await fetch(`${API}/jobs?${p}`);
@@ -97,106 +78,113 @@ async function fetchJobs(append = false) {
 async function fetchCompanies() {
   try {
     const r = await fetch(`${API}/companies?limit=500`);
-    const d = await r.json();
-    COMPANIES = d.companies || [];
+    COMPANIES = (await r.json()).companies || [];
   } catch { COMPANIES = MCA_DATA.companies || []; }
 }
 
-// ── Stats ─────────────────────────────────────────────────────────────────
+// ── Stats ─────────────────────────────────────────────────────────────
 
 function applyStats(s) {
-  const set = (id, v) => { const e = $(id); if (e) e.textContent = v; };
   const fmt = n => n ? n.toLocaleString('en-IN') : '—';
-
-  set('hero-jobs',       fmt(s.total_jobs));
-  set('stat-companies',  fmt(s.crawled_companies || s.total_companies));
-  set('stat-jobs',       fmt(s.total_jobs));
-  set('stat-sources',    fmt(Object.keys(s.ats_breakdown || {}).length || 5));
-  set('stat-updated',    '2m');
-  set('last-updated',    'Just now');
+  const set = (id, v) => { const e = $(id); if (e) e.textContent = v; };
+  set('stat-companies', fmt(s.total_companies || s.crawled_companies));
+  set('stat-portals',   fmt(s.crawled_companies || s.total_companies));
+  set('stat-freshers',  fmt(s.fresher_jobs));
+  set('stat-ats',       fmt(Object.keys(s.ats_breakdown || {}).length || 5));
 }
 
-function setLiveStatus(ok) {
-  const tag = $('data-status');
-  if (tag) tag.textContent = ok ? 'UPDATED' : 'OFFLINE';
+function setLive(ok) {
   const dot = document.querySelector('.live-dot');
+  const pill = document.querySelector('.live-pill');
   if (dot) dot.style.background = ok ? 'var(--green)' : '#ef4444';
-  const sdot = $('status-dot');
-  if (sdot) sdot.style.background = ok ? 'var(--green)' : '#ef4444';
-  const slabel = $('status-label');
-  if (slabel) slabel.textContent = ok ? 'VERIFIED CAREER LINKS' : 'MOCK DATA';
-  if (slabel) slabel.style.color = ok ? 'var(--green)' : '#ef4444';
+  if (pill) pill.style.color = ok ? 'var(--green)' : '#ef4444';
 }
 
-// ── Events ────────────────────────────────────────────────────────────────
+// ── Events ────────────────────────────────────────────────────────────
 
 function bindEvents() {
-  // Sidebar nav
-  qsa('.nav-item').forEach(a => a.addEventListener('click', e => {
+  qsa('.nav-link').forEach(a => a.addEventListener('click', e => {
     e.preventDefault();
-    const v = a.dataset.view;
-    if (v) switchView(v);
+    const v = a.dataset.view; if (v) { switchView(v); closeMobileNav(); }
   }));
 
-  // Exp filter tabs
-  qsa('.exp-btn').forEach(btn => btn.addEventListener('click', () => {
-    qsa('.exp-btn').forEach(b => b.classList.remove('active'));
+  $('menu-btn')?.addEventListener('click', () => $('mobile-nav')?.classList.toggle('hidden'));
+
+  qsa('.exp-tab').forEach(btn => btn.addEventListener('click', () => {
+    qsa('.exp-tab').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    S.exp = btn.dataset.exp;
-    S.page = 0;
-    refresh();
+    S.exp = btn.dataset.exp; S.page = 0; refresh();
   }));
 
-  // Search
-  $('global-search-input')?.addEventListener('input', debounce(e => {
-    S.search = e.target.value.trim();
-    S.page = 0;
-    refresh();
-  }, 300));
+  const debouncedSearch = debounce(async () => {
+    S.search = $('global-search-input')?.value.trim() || '';
+    S.page = 0; await refresh();
+  }, 300);
+  $('global-search-input')?.addEventListener('input', debouncedSearch);
 
-  // MCA search
-  $('mca-search-input')?.addEventListener('input', e => {
-    S.mcaSearch = e.target.value.toLowerCase();
-    renderCompanies();
-  });
-  $('roc-filter-select')?.addEventListener('change', e => {
-    S.rocFilter = e.target.value;
-    renderCompanies();
+  $('sort-select')?.addEventListener('change', e => { S.sort = e.target.value; renderJobs(); });
+
+  $('filter-toggle-btn')?.addEventListener('click', () => {
+    $('filters-panel')?.classList.toggle('hidden');
   });
 
-  // Load more
+  $('mca-search-input')?.addEventListener('input', e => { S.mcaSearch = e.target.value.toLowerCase(); renderCompanies(); });
+  $('roc-filter-select')?.addEventListener('change', e => { S.rocFilter = e.target.value; renderCompanies(); });
+
   $('load-more-btn')?.addEventListener('click', async () => {
     S.page++;
     if (API_UP) { await fetchJobs(true); renderJobs(); }
   });
 
-  // Resolver
-  $('run-resolver-btn')?.addEventListener('click', runResolver);
-
-  // Modal close
   $('close-modal-btn')?.addEventListener('click', closeModal);
   $('cin-modal')?.addEventListener('click', e => { if (e.target === $('cin-modal')) closeModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 }
 
-function debounce(fn, ms) {
-  let t;
-  return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); };
-}
+function closeMobileNav() { $('mobile-nav')?.classList.add('hidden'); }
+function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
 
-// ── View switching ────────────────────────────────────────────────────────
+// ── Views ─────────────────────────────────────────────────────────────
 
 function switchView(id) {
   S.view = id;
   qsa('.view').forEach(v => v.classList.toggle('active', v.id === id));
-  qsa('.nav-item').forEach(a => a.classList.toggle('active', a.dataset.view === id));
-  if (id === 'saved-view')    renderSaved();
+  qsa('.nav-link').forEach(a => a.classList.toggle('active', a.dataset.view === id));
+  if (id === 'saved-view') renderSaved();
   if (id === 'companies-view') renderCompanies();
-  if (id === 'ats-view')      renderPortals();
+  if (id === 'ats-view') renderPortals();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ── Refresh ───────────────────────────────────────────────────────────────
+// ── Filters ───────────────────────────────────────────────────────────
+
+function buildFilters() {
+  const all = JOBS.length ? JOBS : (MCA_DATA?.jobs || []);
+  const cats = [...new Set(all.map(j => j.department || j.category).filter(Boolean))];
+  const locs = ['Bengaluru', 'Mumbai', 'Delhi', 'Hyderabad', 'Pune', 'Chennai', 'Gurugram', 'Remote'];
+  const atsL = [...new Set(all.map(j => j.ats).filter(Boolean))];
+
+  buildChipList('category-filter-list', cats, v => {
+    if (S.cats.has(v)) S.cats.delete(v); else S.cats.add(v); renderJobs();
+  });
+  buildChipList('location-filter-list', locs, v => {
+    if (S.locs.has(v)) S.locs.delete(v); else S.locs.add(v); renderJobs();
+  });
+  buildChipList('ats-filter-list', atsL, v => {
+    if (S.ats.has(v)) S.ats.delete(v); else S.ats.add(v); refresh();
+  });
+}
+
+function buildChipList(id, items, onClick) {
+  const el = $(id); if (!el) return;
+  el.innerHTML = items.map(item => `<button class="filter-chip" data-val="${item}">${item}</button>`).join('');
+  el.querySelectorAll('.filter-chip').forEach(chip => chip.addEventListener('click', () => {
+    chip.classList.toggle('active');
+    onClick(chip.dataset.val);
+  }));
+}
+
+// ── Refresh ───────────────────────────────────────────────────────────
 
 async function refresh() {
   if (API_UP) { showSkeletons(); await fetchJobs(); }
@@ -205,11 +193,11 @@ async function refresh() {
 
 function showSkeletons() {
   const g = $('jobs-cards-grid'); if (!g) return;
-  g.innerHTML = Array(6).fill('<div class="card-skeleton"></div>').join('');
+  g.innerHTML = Array(6).fill('<div class="skeleton-card"></div>').join('');
   $('load-more-wrap')?.classList.add('hidden');
 }
 
-// ── Render Jobs ───────────────────────────────────────────────────────────
+// ── Render Jobs ───────────────────────────────────────────────────────
 
 function renderJobs() {
   const grid = $('jobs-cards-grid'); if (!grid) return;
@@ -223,25 +211,31 @@ function renderJobs() {
         [j.title, j.company_name, j.brand, j.company_cin, ...(j.skills||[])].join(' ').toLowerCase().includes(q)
       );
     }
-    // Sort newest first for fallback data
     jobs.sort((a, b) => {
       const da = a.first_seen || a.posted_date || '';
       const db = b.first_seen || b.posted_date || '';
       return db.localeCompare(da);
     });
   }
-  // API already returns newest first (ORDER BY posted_date DESC, first_seen DESC)
+
+  if (S.cats.size) jobs = jobs.filter(j => S.cats.has(j.department || j.category));
+  if (S.locs.size) jobs = jobs.filter(j => [...S.locs].some(l => (j.location||'').toLowerCase().includes(l.toLowerCase())));
+
+  // Sort
+  if (S.sort === 'company') jobs.sort((a,b) => (a.brand||a.company_name||'').localeCompare(b.brand||b.company_name||''));
+  if (S.sort === 'exp-asc') jobs.sort((a,b) => (a.exp_years||0)-(b.exp_years||0));
+  if (S.sort === 'exp-desc') jobs.sort((a,b) => (b.exp_years||0)-(a.exp_years||0));
 
   const total = API_UP ? S.total : jobs.length;
-  const shown = jobs.length;
+  $('jobs-results-count').textContent = jobs.length
+    ? `Showing ${jobs.length.toLocaleString('en-IN')}${API_UP && total > jobs.length ? ' of ' + total.toLocaleString('en-IN') : ''} jobs`
+    : 'No jobs found';
 
-  $('jobs-results-count').textContent = shown
-    ? `${total.toLocaleString('en-IN')} JOBS`
-    : '';
-  $('hero-jobs').textContent = total ? total.toLocaleString('en-IN') : '—';
-  $('stat-jobs').textContent = total ? total.toLocaleString('en-IN') : '—';
+  // Update stat
+  const sj = $('stat-freshers');
+  if (sj && jobs.length) sj.textContent = jobs.filter(j => j.exp_level === 'entry_level').length.toLocaleString('en-IN');
 
-  if (!shown) {
+  if (!jobs.length) {
     grid.innerHTML = `<div class="empty-state">
       <i class="fa-solid fa-briefcase"></i>
       <h3>No jobs found</h3>
@@ -259,63 +253,79 @@ function renderJobs() {
   else lmw?.classList.add('hidden');
 }
 
+// ── Job Card ──────────────────────────────────────────────────────────
+
+function timeAgo(dateStr) {
+  if (!dateStr) return '';
+  const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 86400000);
+  if (diff <= 0) return 'Today';
+  if (diff === 1) return 'Yesterday';
+  if (diff < 7) return `${diff}d ago`;
+  if (diff < 30) return `${Math.floor(diff/7)}w ago`;
+  return `${Math.floor(diff/30)}mo ago`;
+}
+
 function jobCard(j) {
   const saved   = S.saved.has(j.id);
   const brand   = j.brand || j.company_name || '';
-  const initials = brand.split(/\s+/).map(w => w[0]).join('').slice(0,2).toUpperCase();
-  const avColor = avatarColor(brand);
+  const initials = brand.split(/[\s&]+/).filter(Boolean).map(w => w[0]).join('').slice(0,2).toUpperCase();
   const apply   = j.apply_url || j.direct_url || '#';
   const cin     = j.company_cin || '';
-  const skills  = (j.skills || []).slice(0, 4);
+  const skills  = (j.skills || []).slice(0, 5);
   const isFresh = j.exp_level === 'entry_level';
   const isSenior = j.exp_level === 'experienced';
-  const expClass = isFresh ? 'exp-fresher' : isSenior ? 'exp-senior' : 'exp-mid';
-  const expLabel = j.exp_display || (isFresh ? '0–2 yrs' : isSenior ? '5+ yrs' : '2–5 yrs');
-
-  // Posted time
-  let timeAgo = '';
-  if (j.posted_date) {
-    const diff = Math.floor((Date.now() - new Date(j.posted_date).getTime()) / 3600000);
-    timeAgo = diff < 1 ? 'Just now' : diff < 24 ? `${diff}h ago` : `${Math.floor(diff/24)}d ago`;
-  }
-
-  const source = `${brand}${timeAgo ? ' · ' + timeAgo : ''}`;
+  const expClass = isFresh ? 'badge-fresher' : isSenior ? 'badge-senior' : 'badge-mid';
+  const expLabel = isFresh ? 'Fresher · 0-2 Yrs' : isSenior ? 'Senior · 5+ Yrs' : 'Mid · 2-5 Yrs';
+  const dept = j.department || j.category || '';
+  const desc = (j.description || '').replace(/<[^>]+>/g,' ').trim().slice(0, 180);
+  const date = timeAgo(j.first_seen || j.posted_date);
 
   return `
 <div class="job-card">
-  <div class="card-top">
-    <div class="card-header">
-      <div class="card-avatar ${avColor}">${initials}</div>
-      <div class="card-header-right">
-        <button class="btn-bookmark-card ${saved?'saved':''}" data-id="${j.id}" title="Bookmark">
+  <div class="card-body">
+    <div class="card-top-row">
+      <div class="company-badge">${initials}</div>
+      <div class="card-top-right">
+        <button class="btn-bk${saved?' saved':''}" data-id="${j.id}" title="Bookmark">
           <i class="fa-${saved?'solid':'regular'} fa-bookmark"></i>
         </button>
       </div>
     </div>
-    <div class="card-source">${source}</div>
-    <div class="card-title">${j.title}</div>
-    <div class="card-meta">
-      ${j.location ? `<span class="card-meta-item"><i class="fa-solid fa-location-dot"></i> ${j.location}</span>` : ''}
-      <span class="exp-badge ${expClass}">${expLabel}</span>
+
+    <div class="company-name-row">
+      <span class="co-name">${brand}</span>
+      ${cin ? `<span class="cin-tag" onclick="openModal('${cin}')" title="View MCA record">${cin}</span>` : ''}
     </div>
-    ${skills.length ? `<div class="card-skills">${skills.map(s => `<span class="skill-tag">${s}</span>`).join('')}</div>` : ''}
+
+    <div class="job-title">${j.title}</div>
+
+    <div class="badges-row">
+      <span class="badge ${expClass}">${expLabel}</span>
+      ${j.location ? `<span class="badge badge-loc"><i class="fa-solid fa-location-dot"></i> ${j.location}</span>` : ''}
+      ${j.ats ? `<span class="badge badge-ats">${j.ats}</span>` : ''}
+      ${dept ? `<span class="badge badge-dept">${dept}</span>` : ''}
+    </div>
+
+    ${desc ? `<div class="job-desc">${desc}</div>` : ''}
+
+    ${skills.length ? `<div class="skills-row">${skills.map(s => `<span class="skill">${s}</span>`).join('')}</div>` : ''}
   </div>
-  <div class="card-bottom">
-    ${cin ? `<button class="btn-inspect" onclick="openModal('${cin}')" title="MCA Details">MCA</button>` : ''}
-    <a href="${apply}" target="_blank" rel="noopener" class="btn-apply-official">
-      Apply on official site <i class="fa-solid fa-arrow-up-right-from-square"></i>
+
+  <div class="card-foot">
+    <span class="card-date">${date ? date + ' · ' : ''}Not disclosed</span>
+    <a href="${apply}" target="_blank" rel="noopener" class="btn-apply">
+      Apply Direct <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:.7rem"></i>
     </a>
   </div>
 </div>`;
 }
 
 function bindCardEvents() {
-  qsa('.btn-bookmark-card').forEach(btn => btn.addEventListener('click', e => {
+  qsa('.btn-bk').forEach(btn => btn.addEventListener('click', e => {
     e.stopPropagation();
     const id = btn.dataset.id;
-    if (S.saved.has(id)) S.saved.delete(id);
-    else { S.saved.add(id); showToast('Saved!'); }
-    localStorage.setItem('india_careers_saved', JSON.stringify([...S.saved]));
+    if (S.saved.has(id)) S.saved.delete(id); else { S.saved.add(id); showToast('Saved!'); }
+    localStorage.setItem('mca_cg_saved', JSON.stringify([...S.saved]));
     syncBadge();
     btn.classList.toggle('saved', S.saved.has(id));
     btn.querySelector('i').className = `fa-${S.saved.has(id)?'solid':'regular'} fa-bookmark`;
@@ -323,186 +333,112 @@ function bindCardEvents() {
   }));
 }
 
-function syncBadge() {
-  const el = $('saved-count'); if (el) el.textContent = S.saved.size;
-}
+function syncBadge() { const e = $('saved-count'); if (e) e.textContent = S.saved.size; }
 
-// ── MCA Directory ─────────────────────────────────────────────────────────
+// ── MCA Table ─────────────────────────────────────────────────────────
 
 function renderCompanies() {
   const tbody = $('mca-table-body'); if (!tbody) return;
   const all = COMPANIES.length ? COMPANIES : (MCA_DATA?.companies || []);
-
   let list = all.filter(c => {
     if (S.rocFilter !== 'all' && c.roc !== S.rocFilter) return false;
     if (S.mcaSearch) {
-      const h = [c.cin, c.legal_name || c.name, c.brand, c.domain].join(' ').toLowerCase();
+      const h = [c.cin, c.legal_name||c.name, c.brand, c.domain].join(' ').toLowerCase();
       if (!h.includes(S.mcaSearch)) return false;
     }
     return true;
   }).slice(0, 300);
 
-  if (!list.length) {
-    tbody.innerHTML = `<tr><td colspan="9" class="table-loading">No companies found.</td></tr>`;
-    return;
-  }
+  if (!list.length) { tbody.innerHTML = `<tr><td colspan="9" class="loading-cell">No companies found.</td></tr>`; return; }
 
   tbody.innerHTML = list.map(c => `
     <tr>
-      <td><span class="cin-code">${c.cin || '—'}</span></td>
-      <td>
-        <div class="company-main">${c.legal_name || c.name || '—'}</div>
-        <div class="company-sub">${c.brand || ''}</div>
-      </td>
-      <td>${c.roc || '—'}</td>
-      <td>${c.incorporated || '—'}</td>
-      <td style="font-family:var(--font-mono);font-size:0.75rem;color:var(--green)">${c.capital || '—'}</td>
-      <td><a href="${c.career_url || '#'}" target="_blank" class="table-link">${c.domain || ''}/careers ↗</a></td>
-      <td><span class="ats-pill">${c.ats || '—'}</span></td>
-      <td><span class="jobs-count-pill">${c.jobs_found > 0 ? c.jobs_found : '—'}</span></td>
-      <td><button class="btn-inspect" onclick="openModal('${c.cin || ''}')">Inspect</button></td>
+      <td><span class="td-cin">${c.cin||'—'}</span></td>
+      <td><div class="td-name">${c.legal_name||c.name||'—'}</div><div class="td-brand">${c.brand||''}</div></td>
+      <td>${c.roc||'—'}</td>
+      <td>${c.incorporated||'—'}</td>
+      <td style="font-family:var(--mono);font-size:.75rem;color:var(--green)">${c.capital||'—'}</td>
+      <td><a href="${c.career_url||'#'}" target="_blank" class="td-link">${c.domain||''}/careers ↗</a></td>
+      <td><span class="td-ats">${c.ats||'—'}</span></td>
+      <td><span class="td-jobs">${c.jobs_found > 0 ? c.jobs_found : '—'}</span></td>
+      <td><button class="btn-inspect" onclick="openModal('${c.cin||''}')">Inspect</button></td>
     </tr>`).join('');
 }
 
-// ── ATS Portals ───────────────────────────────────────────────────────────
+// ── Portals ───────────────────────────────────────────────────────────
 
 function renderPortals() {
   const grid = $('career-sites-grid'); if (!grid) return;
   const all = COMPANIES.length ? COMPANIES : (MCA_DATA?.companies || []);
-
   grid.innerHTML = all.slice(0, 80).map(c => `
     <div class="portal-card">
-      <div class="portal-card-brand">${c.brand || c.name}</div>
-      <div class="portal-card-legal">${c.legal_name || c.name}</div>
-      <div class="portal-card-meta">
-        <div><i class="fa-solid fa-link"></i> ${c.domain || '—'}</div>
-        <div><i class="fa-solid fa-server"></i> ${c.ats || 'Custom'}</div>
+      <div class="pc-brand">${c.brand||c.name}</div>
+      <div class="pc-legal">${c.legal_name||c.name}</div>
+      <div class="pc-meta">
+        <div><i class="fa-solid fa-link"></i> ${c.domain||'—'}</div>
+        <div><i class="fa-solid fa-server"></i> ${c.ats||'Custom'}</div>
         ${c.jobs_found ? `<div><i class="fa-solid fa-briefcase"></i> ${c.jobs_found} live jobs</div>` : ''}
       </div>
-      <a href="${c.career_url || '#'}" target="_blank" class="btn-primary">
+      <a href="${c.career_url||'#'}" target="_blank" class="btn-primary full">
         Open Career Portal <i class="fa-solid fa-arrow-up-right-from-square"></i>
       </a>
     </div>`).join('');
 }
 
-// ── Saved ─────────────────────────────────────────────────────────────────
+// ── Saved ─────────────────────────────────────────────────────────────
 
 function renderSaved() {
   const grid = $('saved-jobs-grid'); if (!grid) return;
-  const all = JOBS.length ? JOBS : (MCA_DATA?.jobs || []).map(j => ({...j, apply_url: j.direct_url || '#'}));
+  const all = JOBS.length ? JOBS : (MCA_DATA?.jobs||[]).map(j=>({...j, apply_url:j.apply_url||j.direct_url||'#'}));
   const list = all.filter(j => S.saved.has(j.id));
-
   if (!list.length) {
     grid.innerHTML = `<div class="empty-state">
       <i class="fa-regular fa-bookmark"></i>
       <h3>No saved jobs yet</h3>
-      <p>Click the bookmark icon on a job card to save it here.</p>
-    </div>`;
-    return;
+      <p>Click the bookmark icon on any job card.</p>
+    </div>`; return;
   }
   grid.innerHTML = list.map(jobCard).join('');
   bindCardEvents();
 }
 
-// ── Modal ─────────────────────────────────────────────────────────────────
+// ── Modal ─────────────────────────────────────────────────────────────
 
 window.openModal = function(cin) {
   if (!cin) return;
-  const all = COMPANIES.length ? COMPANIES : (MCA_DATA?.companies || []);
+  const all = COMPANIES.length ? COMPANIES : (MCA_DATA?.companies||[]);
   const c = all.find(x => x.cin === cin) || {
-    cin, legal_name:'MCA REGISTERED ENTITY', brand:'—',
-    roc:'—', incorporated:'—', company_class:'—', capital:'—',
-    domain:'—', career_url:'#', ats:'—'
+    cin, legal_name:'MCA REGISTERED ENTITY', brand:'—', roc:'—',
+    incorporated:'—', company_class:'—', capital:'—', domain:'—', career_url:'#', ats:'—'
   };
-
-  $('modal-company-name').textContent = c.legal_name || c.name || '—';
+  $('modal-company-name').textContent = c.legal_name||c.name||'—';
   $('modal-cin-badge').textContent    = `CIN: ${c.cin}`;
-  $('modal-visit-career-btn').href    = c.career_url || '#';
-
-  $('modal-body-content').innerHTML = `
-    <div class="modal-info-grid">
-      <div><div class="modal-info-label">Brand</div><div class="modal-info-value">${c.brand||'—'}</div></div>
-      <div><div class="modal-info-label">ROC</div><div class="modal-info-value">${c.roc||'—'}</div></div>
-      <div><div class="modal-info-label">Incorporated</div><div class="modal-info-value">${c.incorporated||'—'}</div></div>
-      <div><div class="modal-info-label">Class</div><div class="modal-info-value">${c.company_class||'—'}</div></div>
-      <div><div class="modal-info-label">Capital</div><div class="modal-info-value">${c.capital||'—'}</div></div>
-      <div><div class="modal-info-label">ATS</div><div class="modal-info-value">${c.ats||'Custom'}</div></div>
-      ${c.jobs_found ? `<div><div class="modal-info-label">Live Jobs</div><div class="modal-info-value" style="color:var(--blue)">${c.jobs_found}</div></div>` : ''}
+  $('modal-visit-career-btn').href    = c.career_url||'#';
+  $('modal-body-content').innerHTML   = `
+    <div class="modal-grid">
+      <div><div class="m-label">Brand</div><div class="m-val">${c.brand||'—'}</div></div>
+      <div><div class="m-label">ROC</div><div class="m-val">${c.roc||'—'}</div></div>
+      <div><div class="m-label">Incorporated</div><div class="m-val">${c.incorporated||'—'}</div></div>
+      <div><div class="m-label">Class</div><div class="m-val">${c.company_class||'—'}</div></div>
+      <div><div class="m-label">Capital</div><div class="m-val">${c.capital||'—'}</div></div>
+      <div><div class="m-label">ATS</div><div class="m-val">${c.ats||'Custom'}</div></div>
+      ${c.jobs_found ? `<div><div class="m-label">Live Jobs</div><div class="m-val" style="color:var(--blue)">${c.jobs_found}</div></div>` : ''}
     </div>
     <div class="modal-verify">
       <div class="modal-verify-title"><i class="fa-solid fa-circle-check"></i> MCA Verified</div>
-      <div class="modal-verify-body">Career portal mapped for <strong>${c.brand||c.name}</strong> — <code>${c.career_url||'—'}</code></div>
+      <div class="modal-verify-body">Career portal mapped for <strong>${c.brand||c.name}</strong> — <code style="font-family:var(--mono);color:var(--blue);font-size:.75rem">${c.career_url||'—'}</code></div>
     </div>`;
-
   $('cin-modal').classList.remove('hidden');
 };
 
 function closeModal() { $('cin-modal')?.classList.add('hidden'); }
 
-// ── Resolver ──────────────────────────────────────────────────────────────
-
-function runResolver() {
-  const raw = $('resolver-input-name').value.trim();
-  if (!raw) { showToast('Enter a company name or CIN'); return; }
-
-  const btn = $('run-resolver-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Resolving…';
-
-  const all = COMPANIES.length ? COMPANIES : (MCA_DATA?.companies || []);
-  const q = raw.toLowerCase();
-  const match = all.find(c =>
-    (c.legal_name||c.name||'').toLowerCase().includes(q) ||
-    (c.brand||'').toLowerCase().includes(q) ||
-    (c.cin||'').toLowerCase() === q
-  );
-
-  setTimeout(() => {
-    btn.disabled = false;
-    btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Resolve Career Portal';
-
-    const box = $('resolver-result-box');
-    box.classList.remove('hidden','success','estimate');
-
-    if (match) {
-      box.classList.add('success');
-      box.innerHTML = `
-        <div style="font-weight:700;color:var(--green);margin-bottom:12px">
-          <i class="fa-solid fa-circle-check"></i> Found in MCA Registry — ${match.brand||match.name}
-        </div>
-        <div style="color:var(--gray-700)">
-          <div><strong>Legal Name:</strong> ${match.legal_name||match.name}</div>
-          <div><strong>CIN:</strong> <code style="font-family:var(--font-mono);color:var(--blue)">${match.cin||'—'}</code></div>
-          <div><strong>Career Portal:</strong> <a href="${match.career_url}" target="_blank" style="color:var(--blue)">${match.career_url}</a></div>
-          <div><strong>ATS:</strong> ${match.ats||'Custom'}</div>
-          ${match.jobs_found ? `<div><strong>Live Jobs:</strong> <span style="color:var(--green)">${match.jobs_found}</span></div>` : ''}
-        </div>`;
-    } else {
-      const clean = raw.replace(/PRIVATE LIMITED|LIMITED|LLP|INDIA/gi,'').trim();
-      const domain = $('resolver-input-domain').value.trim() || `${clean.toLowerCase().replace(/\s+/g,'')}.com`;
-      box.classList.add('estimate');
-      box.innerHTML = `
-        <div style="font-weight:700;color:var(--orange);margin-bottom:12px">
-          <i class="fa-solid fa-triangle-exclamation"></i> Not yet indexed — estimated result
-        </div>
-        <div style="color:var(--gray-700)">
-          <div><strong>Estimated Domain:</strong> <a href="https://${domain}" target="_blank" style="color:var(--blue)">${domain}</a></div>
-          <div><strong>Likely Career URL:</strong> <a href="https://${domain}/careers" target="_blank" style="color:var(--blue)">${domain}/careers</a></div>
-          <div style="margin-top:10px;padding:8px 12px;background:#fff7ed;border-radius:6px;font-size:0.82rem;color:var(--orange)">
-            Run <code>python crawl.py --domain ${domain}</code> to index this company.
-          </div>
-        </div>`;
-    }
-  }, 500);
-}
-
-// ── Toast ─────────────────────────────────────────────────────────────────
+// ── Toast ─────────────────────────────────────────────────────────────
 
 let toastTimer;
 function showToast(msg) {
   const el = $('toast'); if (!el) return;
-  el.textContent = msg;
-  el.classList.remove('hidden');
+  el.textContent = msg; el.classList.remove('hidden');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => el.classList.add('hidden'), 2500);
 }
